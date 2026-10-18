@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "id": "my-usb-camera",
+  "name": "Meine USB-Kamera",
+  "backend": "v4l2",
+  "usb": { "vendor": "1234", "product": "abcd" }
+}

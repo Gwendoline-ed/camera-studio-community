@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+dist/
+MANIFEST.json
+api-keys.json
+integrations.json
+language.json
+presets.json
+overlays.json
+camera-profiles.json
+.env
+.env.*
+*.tinybook
+*.sqlite*
+*.log

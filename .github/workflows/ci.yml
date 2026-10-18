@@ -1,0 +1,45 @@
+name: Test and build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ubuntu:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONWARNINGS: ignore::DeprecationWarning
+      GSK_RENDERER: cairo
+      CAMERA_STUDIO_LANGUAGE: de
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-gi python3-cairo python3-gi-cairo python3-pil libtesseract5 gir1.2-gtk-4.0 gir1.2-gdkpixbuf-2.0 gir1.2-pango-1.0 gir1.2-gstreamer-1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good xvfb xauth dbus-x11 gcc
+      - name: Regenerate offline manuals
+        run: |
+          /usr/bin/python3 tools/render_docs.py
+          git diff --exit-code -- docs/
+      - name: Unit tests
+        run: /usr/bin/python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Test all interface languages with synthetic cameras
+        run: |
+          for lang in en de da es pl fr; do
+            xvfb-run -a env PYTHONPATH=. /usr/bin/python3 tests/gui_languages.py "$lang" "$RUNNER_TEMP/ui-$lang"
+          done
+      - name: Test simulated AI providers
+        run: xvfb-run -a env PYTHONPATH=. /usr/bin/python3 tests/gui_ai.py "$RUNNER_TEMP/ai-test"
+      - name: Build DEB and source archive
+        run: /usr/bin/python3 build.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: camera-studio-community
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14

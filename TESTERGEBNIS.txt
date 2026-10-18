@@ -1,0 +1,141 @@
+Camera Studio Community 0.9.0 — verification, 2026-10-18
+======================================================
+
+Completed locally:
+- 166 unit tests passed. Includes all six translation catalogs, literal call
+  coverage, matching named placeholders/format specifications, locale fallback,
+  isolated persistence, restart behavior and unchanged camera protocol values.
+- GTK integration passed in en/de/da/es/pl/fr: five windows per language
+  (main, AI, book, drawing, settings), synthetic video and a simulated Tiny 2.
+  Selecting the translated upper-body button still sent the original correct
+  tracking command. Saving the next language did not move the camera or stop video.
+- Repeated all six language GUI runs on a separate Xvfb display. Initial native
+  desktop runs passed; a later desktop screenshot timeout was isolated to the
+  display session. Headless runs completed, including screenshots of 30 windows.
+- Simulated Local/OpenAI/xAI/Gemini UI regression passed: isolated histories,
+  explicit image dispatch, no requests on provider/settings changes, session-only
+  key entry and automatic book AI remaining off by default.
+- Six complete Markdown manuals and matching standalone HTML guides generated;
+  guide resolution works for source and DEB layouts, without network access.
+- Desktop launcher validated. Distribution source selection excludes Git data,
+  caches, API keys, private configuration, local books and environment files.
+- Release ZIP: all 114 manifest entries and archive CRC verified; six catalogs,
+  six Markdown/HTML guides, license and GitHub workflow included. No Git metadata,
+  credentials or personal configuration in either release artifact.
+- Extracted DEB: French smoke test passed with 45 synthetic preview frames,
+  32 controls and no camera access. All six installed offline guide paths resolved.
+- Documentation links and workflow YAML validated locally. Local Git repository
+  initialized on main, without remote publication.
+- Original Tiny 2 Studio: all 102 baseline file hashes unchanged.
+
+The GitHub workflow is prepared for Ubuntu 24.04. It has not been executed on
+GitHub because no repository has been published during this task. Local tests
+ran on the available Ubuntu host using Python 3.14 and distro GTK/GStreamer.
+No live cloud requests or new physical-camera precision tests were performed.
+Translations were written and reviewed during development, not certified by
+professional native-language reviewers. External cover tools and system dialogs
+retain their own language settings. OCR data remain German and English.
+
+Historical verification records follow (older versions):
+-------------------------------------------------------
+
+Camera Studio Community 0.8.0 – Prüfstand 18.10.2026
+
+KI-Erweiterung:
+159 Unit- und Integrationstests bestanden. Bestehende Kameratests plus
+Anbieterformate, Schlüsselverwaltung und lokale Konfigurationsmigration.
+
+Prüfungen der KI-Anbindung mit simulierten Antworten:
+- OpenAI/xAI Responses und Gemini generateContent mit genau dem aktuellen Bild;
+- feste HTTPS-Ziele, korrekte Authentifizierungsheader, keine Schlüssel in URLs;
+- exakte Bild-ID, strukturierte Markierungen und Seitenränder;
+- unvollständige, abgelehnte oder fehlerhafte Antworten werden verworfen;
+- fehlender Schlüssel und Abbruch führen zu keiner neuen Verbindung;
+- Abbruch während einer Antwort schließt die Verbindung und verwirft das Ergebnis;
+- kein automatischer Wechsel zu einem anderen Anbieter;
+- HTTP-Fehler geben weder Antwortkörper noch reflektierte Schlüssel preis;
+- Sitzungsschlüssel werden nicht gespeichert; freiwillig gespeicherte Schlüssel
+  liegen separat mit Rechten 0600; bestehende lokale Einstellungen werden erhalten.
+
+Nativer GTK-Test gui_ai.py bestanden:
+KI statt Gwen; Dropdown mit Lokal/ChatGPT/Grok/Gemini; Auswahl alleine sendet
+keine Anfrage; jeder Anbieter erhält ausschließlich seinen eigenen Verlauf;
+Zurückwechseln und Chat leeren funktionieren; Bildmarkierungen, KI-Einstellungen
+und Eingabe eines Sitzungsschlüssels geprüft. Öffnen eines Buchs aktiviert keine
+automatischen Cloud-Anfragen; Anbieterwechsel deaktiviert KI-Autokorrektur.
+
+GTK-Buchscan/Zeichnen/Scope-Regressionsprüfung bestanden:
+Seitenprüfung, OCR, Textbearbeitung, manuelle/automatische Aufnahme,
+Projekt-/PDF-/EPUB-Export, Zeichnung an KI und unabhängige Kamera-Vorschau.
+
+Live-Grenzen:
+Keine realen Cloud-Anfragen oder Modellaufrufe, keine echten API-Schlüssel
+für die Tests verwendet. Netzwerkverträge wurden anhand offizieller
+Dokumentation umgesetzt und mit simulierten Serverantworten getestet.
+Modellverfügbarkeit, Berechtigungen und tatsächliche Erkennungsqualität sind
+noch mit einem eingerichteten API-Zugang zu prüfen. Kein Bild wurde für diese
+Tests an OpenAI, xAI oder Google geschickt.
+
+Comic-Erkennung bleibt separate lokale Tesseract-OCR im kompatiblen
+Cover-Werkzeug. Sie wird nicht durch die neue KI-Auswahl umgeleitet.
+
+Alle 102 Dateien der bisherigen Tiny-2-Ausgabe erneut per SHA-256 geprüft:
+keine Änderung. Auch deren Starter und Konfiguration wurden nicht bearbeitet.
+
+Vorheriger Prüfstand der übernommenen Community-Basis:
+----------------------------------------------------
+Camera Studio Community 0.7.0 – Prüfstand 18.10.2026
+
+Automatisierte Tests:
+146 Unit- und Integrationstests bestanden (python3 -m unittest discover).
+Einschließlich bestehender Kamera-/Bewegungslogik, Overlays, G13, Zeichnen,
+Buchscan/OCR, Bildchat, Diktat und lokalem Bildaustausch sowie neuer Profil-
+und V4L2-Moduslogik.
+
+Neue Prüfungen:
+- getrennte Konfiguration; Tiny-2-Profil nicht abschalt- oder überschreibbar;
+- Profilimport, Neustart/Persistenz, USB-Zuordnung, ungültige/zu große Profile;
+- deaktivierte AmScope-/Andonstar-Adapter werden nicht abgefragt;
+- diskrete Formate und Größen, exakte gebrochene Bildraten;
+- abgestufte Größenbereiche und Ablehnung nicht passender Größen;
+- Metadatenknoten, ungültige Kamerapfade und unlesbare Moduslisten;
+- getrennte explizite Konfiguration optionaler lokaler Dienste.
+
+Native GTK-/GStreamer-Fenstertests mit künstlichen Kameras bestanden:
+- Aufnahmemodus 853×479 mit 30000/1001 Bildern/s;
+- freie Größe 848×480 im gemeldeten Größenraster;
+- zwei zusätzliche, unabhängige Videofenster parallel zur Tiny-2-Vorschau;
+- Profilwechsel und erneute Suche erhalten laufende Fenster;
+- Stop einer zusätzlichen Kamera beeinflusst die anderen Bilder nicht;
+- kein Tiny-2-Steuerbefehl durch zusätzliche Kameras;
+- eigenes Programmkennzeichen io.local.CameraStudioCommunity;
+- Profilimport/Persistenz und Fenster für Zusatzdienste.
+
+Bestehender Tiny-2-Oberflächentest bestanden:
+Nur lesender Start, Tracking, Position, Zoom, lokale Positionen,
+Stop während laufendem Auftrag und Verbindungsabbruch mit synthetischem Gerät.
+
+Optionaler AmScope-Adapter mit künstlicher SDK-Bibliothek geprüft:
+Isolierter RGB-Stream, Farbreihenfolge, Orientierung, Stop/Neustart,
+belegte Kamera, Startfehler, Trennung und sauberes Prozessende.
+Die künstliche SDK-Bibliothek ist nicht Bestandteil des Installationspakets.
+
+Starttest: GTK-Fenster erfolgreich; 43 Testbild-Frames empfangen;
+32 bestehende Steuerungselemente; kein Zugriff auf eine Kamera.
+
+V4L2-Strukturgrößen und ioctl-Werte gegen installierte Linux-C-Header kompiliert:
+v4l2_fmtdesc 64, v4l2_frmsizeenum 44, v4l2_frmivalenum 52 Byte.
+ENUM_FMT 0xc0405602, ENUM_FRAMESIZES 0xc02c564a, ENUM_FRAMEINTERVALS 0xc034564b.
+
+Isolation der bisherigen Ausgabe:
+SHA-256-Vergleich aller 102 Dateien in tiny2-ubuntu mit dem Stand vor Beginn
+bestätigt: keine Datei geändert, hinzugefügt oder entfernt.
+Eigener Quellordner, Paketname, Starter, Anwendungskennung und Konfigurations-
+und Buchprojektordner. Das Paket wurde gebaut, nicht im System installiert.
+
+Grenzen:
+Keine /dev/video-Geräte in der Testumgebung verfügbar. Kein Live-Test neuer
+Modi an Tiny 2 oder anderen USB-Kameras. Andonstar-Livestream und optionale
+KI-/Whisper-Dienste wurden in dieser Ausgabe nicht an echter Hardware bzw.
+mit einem realen Modell geprüft. Proprietäre Aufnahmemodi bleiben automatisch.
+Die nominelle Bildrate der Quelle ist keine Messung der Anzeigeleistung.

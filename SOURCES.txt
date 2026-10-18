@@ -1,0 +1,153 @@
+Protokollgrundlagen, Stand 17.10.2026
+
+Eigene statische Analyse der bereitgestellten Dateien mit Ghidra 12.1.4:
+- libdev.dll aus OBSBOT Center 2.0.15.186
+  SHA256 2486d1f3fe8be947fe62f6392a1f24641607f5d3b0d865cd31b1eef18d254bd8
+- Kameraprogramm aus Tiny-2-Firmware 6.0.13.1
+  SHA256 4b52d4bf920cabdf93ec9af4213a8da8847f1c7f43e21a0baed14e836a7d479f
+
+Relevante libdev-Adressen:
+  0x1801006c0 V3-Kodierer
+  0x1800ffde0 CRC-Verarbeitung
+  0x180019c10 Motorwinkel
+  0x180019830 Geschwindigkeit
+  0x180019b80 Stop
+  0x18001ac20 Tracking-Modus (für Tiny2 Standard/Sport verwendet)
+  0x180104550 Rohwinkel-Dekodierer
+Die Befehlszuordnungen wurden zuvor aus Konstanten im Binärprogramm gelesen.
+
+Öffentliche Primärquellen zum Abgleich:
+
+Linux-Kernel: UVCIOC_CTRL_QUERY, GET_LEN, GET_INFO und ABI
+https://docs.kernel.org/userspace-api/media/drivers/uvcvideo.html
+Zusätzlich direkt gegen die installierten linux/uvcvideo.h und videodev2.h
+kompiliert und Größen, Offsets sowie ioctl-Nummern verglichen.
+
+lxman/obsbot-mcp: V3-Protokoll, Mailbox, Status-Offsets, Tiny2-spezifische
+Tracking-Steuerung, Zoom- und Vorzeichenkonventionen
+https://github.com/lxman/obsbot-mcp/blob/master/tiny2_specification.md
+https://github.com/lxman/obsbot-mcp/blob/master/PROTOCOL.md
+https://github.com/lxman/obsbot-mcp/blob/master/src/codec/commands.ts
+Die dort berichteten Hardwaretests sind Tests der jeweiligen Autoren,
+keine eigenen Live-Tests dieser Community-Ausgabe.
+
+Mitchell O'Hara-Wild: aus Windows-USB-Mitschnitten gewonnene AI-Modi und
+Wake-/Sleep-Pakete. Die beiden Paketköpfe samt Prüfsummen dienen als feste
+Referenzwerte in den Tests.
+https://github.com/mitchelloharawild/obsbot-tiny-2-control/blob/master/obsbot.py
+
+Eigene Linux-Implementierung; kein Einbinden der Windows-Gerätebibliothek.
+
+GTK-Overlay-Erweiterung 0.2.0: eigener Code, kein Hersteller-Bildfilter.
+GTK-Dokumentation: https://docs.gtk.org/gtk4/class.DrawingArea.html
+Fenster: https://docs.gtk.org/gtk4/method.Window.set_child.html
+Bildauswahl: https://docs.gtk.org/gtk4/class.FileChooserNative.html
+
+Erweiterungen 0.4.0, 18.10.2026:
+GTK GestureDrag / cancel / Window is-active:
+https://docs.gtk.org/gtk4/class.GestureDrag.html
+https://docs.gtk.org/gtk4/signal.Gesture.cancel.html
+https://docs.gtk.org/gtk4/property.Window.is-active.html
+Gimbal-Impuls 0x6484: lokaler Ghidra-Export aiSetGimbalSpeedCtrlR_180019830.c,
+zusätzlich abgeglichen mit:
+https://raw.githubusercontent.com/lxman/obsbot-mcp/master/tiny2_specification.md
+https://raw.githubusercontent.com/lxman/obsbot-mcp/master/src/codec/commands.ts
+Ollama: lokales Modell, Bildnachrichten und strukturierte Antworten:
+https://docs.ollama.com/api/chat
+https://docs.ollama.com/capabilities/vision
+https://docs.ollama.com/capabilities/structured-outputs
+Community-Ausgabe: Bildmodell, Whisper und kompatibles Cover-Tool sind optionale,
+vom Benutzer konfigurierte lokale Dienste. Keine private Installation mitgeliefert.
+
+G13-Erweiterung 0.5.0:
+Kompatibler g13-configurator-Treiber, dessen Unix-Socket-
+Protokoll und Profilvalidierung direkt im installierten Quelltext geprüft.
+Projekt: https://github.com/jonas-werner/g13-configurator
+Keine Treiberänderung; eigener stdlib-Client für Status und Profilwahl.
+
+Erweiterungen 0.6.0, 18.10.2026:
+GTK-Stiftachsen und Fensterbewegung (zusätzlich lokale GI-Signaturen geprüft):
+https://docs.gtk.org/gtk4/method.GestureStylus.get_axis.html
+https://docs.gtk.org/gdk4/method.Toplevel.begin_move.html
+Perspektivische Abbildung mit Pillow:
+https://pillow.readthedocs.io/en/stable/reference/ImageTransform.html
+Tesseract C API:
+https://raw.githubusercontent.com/tesseract-ocr/tesseract/main/include/tesseract/capi.h
+EPUB 3.3:
+https://www.w3.org/TR/epub-33/
+
+OCR-Sprachdaten aus dem bestehenden Projekt übernommen.
+Quellen der dort mit SHA256 verifizierten Dateien:
+https://tessdata.projectnaptha.com/4.0.0/deu.traineddata.gz
+https://tessdata.projectnaptha.com/4.0.0/eng.traineddata.gz
+SHA256 deu: f5618a8b8d07f6c7a633ce243bf075bb90f4145bb15c9264734c7cc63aa33205
+SHA256 eng: ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468
+Tesseract-Sprachdaten: Apache License 2.0; Lizenz liegt unter tiny2/data/ocr/.
+https://raw.githubusercontent.com/tesseract-ocr/tessdata/main/LICENSE
+Kein Windows-/XP-Pen-Treiber eingebunden; Tablet über GTK/Linux-Eingabe.
+Scope-Video über separaten GStreamer/V4L2-Stream mit Formatverhandlung.
+
+MU300-Korrektur 0.6.1, 18.10.2026:
+Lokale Geräteinventur: USB 0547:6310, Hersteller TT, Produkt USB2.0 Camera.
+Die vorhandene AmLite-Konfiguration enthält [MU300]. Native Modellabfrage
+Amcam_get_Model(0x0547,0x6310) liefert tatsächlich "MU300".
+Installierte Bibliothek: ~/.local/opt/AmLite/libamcam.so, Version 59.31190.20260413.
+
+Offizielle AmScope-Software und SDK-Verweis:
+https://amscope.com/pages/camera-support-mu-series
+https://amscope.com/products/mu303b
+https://storage.googleapis.com/software-download-d79bb.appspot.com/New%20Software%20Structure/TPG/SDK/AmScope-Camera-SDK-Software.zip
+Dessen ReadMe ordnet amCam der MU-Serie zu; enthaltenes toupcamsdk.20240311.zip:
+C-Header mit EnumV2, ModelV2, FrameInfoV2, PullImageWithRowPitchV2, Optionen und
+Callback-Hinweisen. Layouts gegen C-Compiler geprüft; entsprechende Amcam-Exporte
+in der bereits installierten Bibliothek vorhanden. Eigene minimale Python-Bindung.
+Keine SDK-Bibliothek oder Herstellerprogramme im Paket mitverteilt.
+
+Andonstar WLAN (0.6.2)
+- Hersteller: https://andonstar.com/download/
+- AD409 Pro Handbuch: https://cdn.shopify.com/s/files/1/0404/8319/2994/files/AD409-pro_users_manual-Ver_01_1.pdf?v=1666253880
+- Erste technische Hinweise auf den MJPEG-Port: https://github.com/rgov/novatek-api
+- Beschreibung der Novatek-Leseabfragen: https://github.com/nutsey/novatek-web-api-commands
+- Entscheidende Verifikation direkt am Gerät: Version AD400.22101990.V31-DUAL10,
+  Abfrage 2019 liefert HTTP-Port 8192; echte MJPEG-Bilder 640 x 368 dekodiert.
+
+Stifteingabe-Korrektur (0.6.3)
+- GTK-Gesten-Zustände: https://docs.gtk.org/gtk4/class.Gesture.html
+- Abbruchsignale: https://docs.gtk.org/gtk4/signal.Gesture.cancel.html
+- Stifteingabe: https://docs.gtk.org/gtk4/class.GestureStylus.html
+- Reproduktion und Vorher/Nachher-Prüfung im eigenen GTK-Fenstertest.
+
+Community-Ausgabe 0.7.0, 18.10.2026:
+Read-only V4L2-Modusabfrage; Größen, Formate und Bildintervalle:
+https://docs.kernel.org/userspace-api/media/v4l/vidioc-enum-fmt.html
+https://docs.kernel.org/userspace-api/media/v4l/vidioc-enum-framesizes.html
+https://docs.kernel.org/userspace-api/media/v4l/vidioc-enum-frameintervals.html
+GStreamer-Formatverhandlung und Rohformate:
+https://gstreamer.freedesktop.org/documentation/video4linux2/v4l2src.html
+https://gstreamer.freedesktop.org/documentation/additional/design/mediatype-video-raw.html
+Eigene deklarative JSON-Profile; keine Windows-DLL, Firmware oder proprietäre
+SDK-Bibliothek im Community-Paket enthalten.
+
+KI-Anbieter 0.8.0, 18.10.2026 (offizielle Dokumentationen gelesen):
+OpenAI, Bildinput und strukturierte Antworten der Responses API:
+https://developers.openai.com/api/docs/guides/images-vision
+https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses
+xAI, Responses API und Bildverständnis:
+https://docs.x.ai/developers/rest-api-reference/inference/responses
+https://docs.x.ai/developers/model-capabilities/images/understanding
+https://docs.x.ai/developers/model-capabilities/text/structured-outputs
+Google, generateContent, inlineData, responseJsonSchema und Abschlussstatus:
+https://ai.google.dev/api/generate-content
+https://ai.google.dev/gemini-api/docs/generate-content/image-understanding
+Eigene stdlib-HTTPS-Anbindung mit festen Anbieteradressen; keine privaten
+Chat-Cookies, keine fremden API-Schlüssel und keine Modelle im Paket enthalten.
+API-Vertragstests simuliert, keine echten Cloud-Bildanfragen ausgeführt.
+
+Mehrsprachige Community-Ausgabe 0.9.0, 18.10.2026:
+Eigene JSON-Sprachkataloge und lokale HTML-Anleitungen; keine Cloud-Übersetzung
+oder fremde Übersetzungsbibliothek im Paket. MIT für Anwendung und Dokumentation
+vom Benutzer ausdrücklich gewählt; OCR-Daten behalten Apache-2.0.
+MIT-Lizenzvorlage: https://opensource.org/license/mit
+GitHub-Actions-Verwendung anhand der offiziellen Repositories geprüft:
+https://github.com/actions/checkout
+https://github.com/actions/upload-artifact

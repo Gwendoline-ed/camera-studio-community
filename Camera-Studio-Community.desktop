@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Camera Studio Community
+Comment=Tiny 2 and additional cameras with selectable capture sizes
+Comment[de]=Tiny 2 und zusätzliche Kameras mit wählbaren Aufnahmegrößen
+Comment[da]=Tiny 2 og ekstra kameraer med valgbare optagestørrelser
+Comment[es]=Tiny 2 y otras cámaras con tamaños de captura seleccionables
+Comment[pl]=Tiny 2 i dodatkowe kamery z wyborem rozmiaru obrazu
+Comment[fr]=Tiny 2 et autres caméras avec tailles de capture au choix
+Exec=camera-studio-community
+Icon=camera-video
+Terminal=false
+Categories=AudioVideo;Video;
+StartupWMClass=io.local.CameraStudioCommunity
